@@ -68,7 +68,7 @@ void recStep(int N, Solution sln, Matrix mat, Solution *best) {
         return;
     // Свободная клетка
     Square cell = findFree(mat);
-
+    // Если не найдена
     if (cell.y == -1) {
         // Новое кратчайшее решение
         if (sln.size < best->size) {
@@ -146,6 +146,7 @@ Solution solve(int N) {
 
 // Решение в случае прямоугольника
 Solution advancedSolve(int N, int M, int *count) {
+    // Аналогично базовое лучшее решение - все квадраты 1х1
     Solution best = {N * M, N * M, malloc(sizeof(Square) * N * M)};
     for (int i = 0; i < best.size; ++i) {
         best.list[i] = (Square) {i / N, i % N, 1};
@@ -171,9 +172,9 @@ void advancedRecStep(int N, int M, Solution sln, Matrix mat, Solution *best, int
         return;
     // Свободная клетка
     Square cell = findFree(mat);
-
+    // Если не найдена
     if (cell.y == -1) {
-        // Подсчёт минимальных замощений
+        // Инкремент количества минимальных замощений
         if (sln.size == best->size)
             (*count) ++;
         // Новое кратчайшее решение
