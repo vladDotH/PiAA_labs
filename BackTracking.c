@@ -3,12 +3,21 @@
 // Флаг отладки
 int DEBUG = 0;
 
+// Отстсуп на n пробелов
+void printTab(int n) {
+    while (n-- > 0)
+        dbgPrintf("  ");
+}
+
 // Вывод решения
-void printSln(Solution sln) {
+void printSln(Solution sln, int tabs) {
+    printTab(tabs);
     dbgPrintf("Size: %d {\n", sln.size);
     for (int i = 0; i < sln.size; ++i) {
+        printTab(tabs);
         dbgPrintf("%d, %d, %d\n", sln.list[i].y, sln.list[i].x, sln.list[i].R);
     }
+    printTab(tabs);
     dbgPrintf("}\n");
 }
 
@@ -62,18 +71,24 @@ int check(Matrix mat, Square sq) {
 }
 
 // Рекурсивный шаг
-void recStep(int N, Solution sln, Matrix mat, Solution *best) {
+void recStep(int N, Solution sln, Matrix mat, Solution *best, int depth) {
     // Завершение неоптимальной ветки решения (если решение уже длиннее лучшего)
-    if (sln.size >= best->size)
+    if (sln.size >= best->size) {
+        printTab(depth);
+        dbgPrintf("Branch size more than best, returning\n");
         return;
+    }
     // Свободная клетка
     Square cell = findFree(mat);
     // Если не найдена
     if (cell.y == -1) {
         // Новое кратчайшее решение
         if (sln.size < best->size) {
-            dbgPrintf("New record - ");
-            printSln(sln);
+            dbgPrintf("\n");
+            printTab(depth);
+            dbgPrintf("New record:\n");
+            printSln(sln, depth);
+            dbgPrintf("\n");
             memcpy(best->list, sln.list, sizeof(Square) * sln.size);
             best->size = sln.size;
         }
@@ -84,11 +99,15 @@ void recStep(int N, Solution sln, Matrix mat, Solution *best) {
                 // Вставка
                 insert(mat, cell, 1);
                 sln.list[sln.size++] = cell;
+                printTab(depth);
+                dbgPrintf("Inserting square: (%d %d %d)\n", cell.y, cell.x, cell.R);
                 // Новый шаг в глубину
-                recStep(N, sln, mat, best);
+                recStep(N, sln, mat, best, depth + 1);
                 // Откат к предыдущему состоянию (чтобы не создавать новую матрицу и массив решений на каждом шаге)
                 insert(mat, cell, 0);
                 sln.size--;
+                printTab(depth);
+                dbgPrintf("Drop square: (%d %d %d)\n", cell.y, cell.x, cell.R);
             }
         }
     }
@@ -127,9 +146,10 @@ Solution solve(int N) {
 
     dbgPrintf("Initial matrix:\n");
     printMat(mat);
+    dbgPrintf("\n");
 
     // запуск рекурсии
-    recStep(N, sln, mat, &best);
+    recStep(N, sln, mat, &best, 0);
 
     // Обратное масштабирование решения
     if (remain != 1) {
@@ -159,29 +179,41 @@ Solution advancedSolve(int N, int M, int *count) {
     // Количество вариантов минимального замощения
     *count = 0;
     // запуск рекурсии
-    advancedRecStep(N, M, sln, mat, &best, count);
+    advancedRecStep(N, M, sln, mat, &best, count, 0);
     free(sln.list);
     free(mat.arr);
     return best;
 }
 
 // Шаг в случае прямоугольника
-void advancedRecStep(int N, int M, Solution sln, Matrix mat, Solution *best, int *count) {
+void advancedRecStep(int N, int M, Solution sln, Matrix mat, Solution *best, int *count, int depth) {
     // Завершение неоптимальной ветки решения (если решение уже длиннее лучшего)
-    if (sln.size > best->size)
+    if (sln.size > best->size) {
+        printTab(depth);
+        dbgPrintf("Branch size more than best, returning\n");
         return;
+    }
     // Свободная клетка
     Square cell = findFree(mat);
     // Если не найдена
     if (cell.y == -1) {
         // Инкремент количества минимальных замощений
-        if (sln.size == best->size)
-            (*count) ++;
+        if (sln.size == best->size) {
+            (*count)++;
+            dbgPrintf("\n");
+            printTab(depth);
+            dbgPrintf("Equal solution found:\n");
+            printSln(sln, depth);
+            dbgPrintf("\n");
+        }
         // Новое кратчайшее решение
         if (sln.size < best->size) {
             (*count) = 1;
-            dbgPrintf("New record - ");
-            printSln(sln);
+            dbgPrintf("\n");
+            printTab(depth);
+            dbgPrintf("New record:\n");
+            printSln(sln, depth);
+            dbgPrintf("\n");
             memcpy(best->list, sln.list, sizeof(Square) * sln.size);
             best->size = sln.size;
         }
@@ -193,11 +225,15 @@ void advancedRecStep(int N, int M, Solution sln, Matrix mat, Solution *best, int
                 // Вставка
                 insert(mat, cell, 1);
                 sln.list[sln.size++] = cell;
+                printTab(depth);
+                dbgPrintf("Inserting square: (%d %d %d)\n", cell.y, cell.x, cell.R);
                 // Новый шаг в глубину
-                advancedRecStep(N, M, sln, mat, best, count);
+                advancedRecStep(N, M, sln, mat, best, count, depth + 1);
                 // Откат к предыдущему состоянию (чтобы не создавать новую матрицу и массив решений на каждом шаге)
                 insert(mat, cell, 0);
                 sln.size--;
+                printTab(depth);
+                dbgPrintf("Drop square: (%d %d %d)\n", cell.y, cell.x, cell.R);
             }
         }
     }
