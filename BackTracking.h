@@ -12,6 +12,9 @@ extern int DEBUG;
 // Отладочный вывод
 #define dbgPrintf(...) if (DEBUG) printf(__VA_ARGS__);
 
+// Отстсуп на n пробелов
+void printTab(int n);
+
 // Квадрат
 typedef struct Square {
     int y, x, R;
@@ -24,7 +27,7 @@ typedef struct Solution {
 } Solution;
 
 // Вывод решения
-void printSln(Solution sln);
+void printSln(Solution sln, int tabs);
 
 // Целочисленная матрица n на m
 typedef struct Matrix {
@@ -48,7 +51,7 @@ Square findFree(Matrix mat);
 int check(Matrix mat, Square sq);
 
 // Рекурсивный шаг
-void recStep(int N, Solution sln, Matrix mat, Solution *best);
+void recStep(int N, Solution sln, Matrix mat, Solution *best, int depth);
 
 // Базовое решение
 Solution solve(int N);
@@ -57,6 +60,6 @@ Solution solve(int N);
 Solution advancedSolve(int N, int M, int *count);
 
 // Шаг в случае прямоугольника
-void advancedRecStep(int N, int M, Solution sln, Matrix mat, Solution *best, int *count);
+void advancedRecStep(int N, int M, Solution sln, Matrix mat, Solution *best, int *count, int depth);
 
 #endif //BACKTRACKING_H
