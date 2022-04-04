@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <string>
+#include "Logger.h"
 
 std::vector<int> prefFunc(std::string str);
 
