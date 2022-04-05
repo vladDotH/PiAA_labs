@@ -5,6 +5,6 @@
 #include <string>
 #include "Logger.h"
 
-std::vector<int> prefFunc(std::string str);
+std::vector<int> prefFunc(const std::string &str);
 
 #endif //PREFIXFUNC_H

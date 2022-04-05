@@ -5,7 +5,7 @@
 #include "Logger.h"
 
 // Вычисление индекса сдвига (s1 - сдвиг s2)
-int cycleShift(std::string s1, std::string s2, char delimiter = '|') {
+int cycleShift(const std::string &s1, const std::string &s2, char delimiter = '|') {
     _log("Detection of possible cycle shift from \"" + s2 + "\" to \"" + s1 + "\"\n");
     _incTab();
 

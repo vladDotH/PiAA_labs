@@ -1,7 +1,7 @@
 #include "prefixFunc.h"
 
 // Вычисление префикс-функции
-std::vector<int> prefFunc(std::string str) {
+std::vector<int> prefFunc(const std::string &str) {
     _log("Calculation of Prefix-Function of string: \"" + str + "\"\n");
     _incTab();
 
