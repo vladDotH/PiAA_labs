@@ -46,5 +46,15 @@ int main() {
     // B - строка, A - её предполагаемый циклический сдвиг
     std::string A, B;
     std::cin >> A >> B;
-    std::cout << cycleShift(A, B);
+    // Сдвиг влево.
+    int ind = cycleShift(A, B);
+    if (ind == -1) {
+    	// Сдвиг вправо
+    	_log("Right shift is not found, start to detect left shift\n");
+        ind = cycleShift(B, A);
+        if (ind != -1)
+            ind = A.size() - ind;
+    }
+    
+    std::cout << ind;
 }
